@@ -2,7 +2,7 @@
  * App Config File
  */
 export default {
-  baseURL: "http://localhost:5000",
+  baseURL: "http://45.76.179.58:5000",
   appLogo: "/static/img/site-logo.png", // App Logo,
   darkLogo: "/static/img/site-dark-logo.png", // dark logo
   appLogo2: "/static/img/session.png", // App Logo 2 For Login & Signup Page
