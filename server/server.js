@@ -24,7 +24,7 @@ app.use(cors({ origin: "*" }));
 keys.sqldb = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "rootroot",
   database: "ftu"
 });
 
