@@ -10,7 +10,7 @@
                     </div>
                     <v-data-table v-bind:headers="headers" :items="this.getCustomers">
                         <template slot="items" slot-scope="props">
-                            <td>{{ props.index + 1 }}</td>
+                            <td>{{ props.index + 1 + pagenum * pagesize }}</td>
                             <td>{{ props.item.cust_fn }}</td>
                             <td>{{ props.item.cust_ln }}</td>
                             <td>{{ props.item.email }}</td>
@@ -151,12 +151,14 @@ export default {
       this.$store.dispatch("getCustomerList", data);
     },
     openadd() {
+      this.$store.dispatch("resetCustomerErrors", {});
       this.diag_title = "Add customer";
       this.diag_type = 0;
       this.diag_flag = true;
       this.resetData();
     },
     openedit(item) {
+      this.$store.dispatch("resetCustomerErrors", {});
       this.diag_title = "Edit customer";
       this.diag_type = 1;
       this.diag_flag = true;
@@ -235,7 +237,6 @@ export default {
   },
   watch: {
     getCustomerCreatedFlag: function(newValue) {
-      console.log(newValue);
       if (newValue) {
         this.diag_flag = false;
       }

@@ -1,10 +1,10 @@
 <template>
    <v-list-tile class="sidebar-profile">
 		<v-list-tile-avatar>
-			<img src="/static/avatars/user-13.jpg" alt="avatar" height="40" width="40" class="img-responsive" />
+			<img src="/static/avatars/avatar.png" alt="avatar" height="40" width="40" class="img-responsive" />
 		</v-list-tile-avatar>
-		<v-list-tile-content class="ml-3">
-			<v-list-tile-title><span>{{getUser.username}}</span></v-list-tile-title>
+		<v-list-tile-content class="mx-2">
+			<v-list-tile-title><span>{{getUser.first_name + ' ' + getUser.last_name}}</span></v-list-tile-title>
 		</v-list-tile-content>
 		<v-menu 
 			bottom
@@ -20,8 +20,8 @@
 			</v-btn>
 			<div class="dropdown-content">
 				<div class="dropdown-top white--text primary">
-					<span class="white--text fs-14 fw-bold d-block">{{getUser.username}}</span>
-					<span class="d-block fs-12 fw-light">{{getUser.nickname}}</span>
+					<span class="white--text fs-14 fw-bold d-block">{{getUser.first_name + ' ' + getUser.last_name}}</span>
+					<span class="d-block fs-12 fw-light">{{getUser.email}}</span>
 				</div>
 				<v-list class="dropdown-list">
 					<template v-for="userLink in userLinks" v-if="userLink.id !== 4">

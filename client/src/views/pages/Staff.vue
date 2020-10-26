@@ -10,7 +10,7 @@
           </div>
           <v-data-table v-bind:headers="headers" :items="this.getStaffs">
             <template slot="items" slot-scope="props">
-              <td>{{ props.index + 1 }}</td>
+              <td>{{ props.index + 1 + pagenum * pagesize }}</td>
               <td>{{ props.item.staff_fn }}</td>
               <td>{{ props.item.staff_ln }}</td>
               <td>{{ props.item.staff_email }}</td>
@@ -126,12 +126,14 @@ export default {
       this.$store.dispatch("getStaffList", data);
     },
     openadd() {
+      this.$store.dispatch("resetStaffErrors", {});
       this.diag_title = "Add staff";
       this.diag_type = 0;
       this.diag_flag = true;
       this.resetData();
     },
     openedit(item) {
+      this.$store.dispatch("resetStaffErrors", {});
       this.diag_title = "Edit staff";
       this.diag_type = 1;
       this.diag_flag = true;
@@ -194,7 +196,6 @@ export default {
   },
   watch: {
     getStaffCreatedFlag: function(newValue) {
-      console.log(newValue);
       if (newValue) {
         this.diag_flag = false;
       }

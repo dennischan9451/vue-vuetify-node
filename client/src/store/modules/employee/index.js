@@ -24,12 +24,15 @@ const getters = {
     return state.error;
   },
   getEmployeeCreatedFlag: state => {
-    return state.created_flag
+    return state.created_flag;
   }
 };
 
 // actions
 const actions = {
+  resetEmployErrors(context, payload) {
+    return context.commit("resetEmployErrors", payload);
+  },
   addEmployee(context, payload) {
     // context.commit("signupUser");
     axios
@@ -39,9 +42,12 @@ const actions = {
           Nprogress.done();
 
           setTimeout(() => {
-            context.commit("createEmployeeSuccess", "New Employee created successfully.");
+            context.commit(
+              "createEmployeeSuccess",
+              "New Employee created successfully."
+            );
           }, 100);
-          return context.dispatch('getEmployeeList', payload);
+          return context.dispatch("getEmployeeList", payload);
         } else {
           return context.commit("createEmployeeFailure", response.data);
         }
@@ -58,9 +64,12 @@ const actions = {
         if (response.data.success) {
           Nprogress.done();
           setTimeout(() => {
-            context.commit("createEmployeeSuccess", "Employee updated successfully.");
+            context.commit(
+              "createEmployeeSuccess",
+              "Employee updated successfully."
+            );
           }, 100);
-          return context.dispatch('getEmployeeList', payload);
+          return context.dispatch("getEmployeeList", payload);
         } else {
           return context.commit("createEmployeeFailure", response.data);
         }
@@ -79,27 +88,22 @@ const actions = {
             type: "success",
             text: "Employee deleted successfully."
           });
-          context.dispatch('getEmployeeList', payload);
+          context.dispatch("getEmployeeList", payload);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   },
   getEmployeeList(context, payload) {
-    axios
-      .post(`${AppConfig.baseURL}/api/users`, payload)
-      .then(response => {
-        if (response.data) {
-          Nprogress.done();
-          context.commit("getEmployeeListSuccess", response.data);
-        } else {
-          context.commit("getEmployeeListFailure");
-
-        }
-      })
+    axios.post(`${AppConfig.baseURL}/api/users`, payload).then(response => {
+      if (response.data) {
+        Nprogress.done();
+        context.commit("getEmployeeListSuccess", response.data);
+      } else {
+        context.commit("getEmployeeListFailure");
+      }
+    });
   },
-  clearCreateState(context) {
-
-  }
+  clearCreateState(context) {}
 };
 
 // mutations
@@ -131,6 +135,10 @@ const mutations = {
     state.employees = [];
     state.total = 0;
     state.created_flag = false;
+  },
+  resetEmployErrors(state, data) {
+    state.error = {};
+    return true;
   }
 };
 

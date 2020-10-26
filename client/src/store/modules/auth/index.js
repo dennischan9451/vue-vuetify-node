@@ -61,7 +61,6 @@ const actions = {
     axios
       .post(`${AppConfig.baseURL}/api/users/login`, payload)
       .then(response => {
-        console.log(response);
         if (response.data.success) {
           Nprogress.done();
           setTimeout(() => {

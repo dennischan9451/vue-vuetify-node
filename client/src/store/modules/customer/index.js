@@ -27,12 +27,15 @@ const getters = {
     return state.error;
   },
   getCustomerCreatedFlag: state => {
-    return state.created_flag
+    return state.created_flag;
   }
 };
 
 // actions
 const actions = {
+  resetCustomerErrors(context, payload) {
+    return context.commit("resetCustomerErrors", payload);
+  },
   addCustomer(context, payload) {
     // context.commit("signupUser");
     axios
@@ -42,9 +45,12 @@ const actions = {
           Nprogress.done();
 
           setTimeout(() => {
-            context.commit("createCustomerSuccess", "New Customer created successfully.");
+            context.commit(
+              "createCustomerSuccess",
+              "New Customer created successfully."
+            );
           }, 100);
-          return context.dispatch('getCustomerList', payload);
+          return context.dispatch("getCustomerList", payload);
         } else {
           return context.commit("createCustomerFailure", response.data);
         }
@@ -61,9 +67,12 @@ const actions = {
         if (response.data.success) {
           Nprogress.done();
           setTimeout(() => {
-            context.commit("createCustomerSuccess", "Customer updated successfully.");
+            context.commit(
+              "createCustomerSuccess",
+              "Customer updated successfully."
+            );
           }, 100);
-          return context.dispatch('getCustomerList', payload);
+          return context.dispatch("getCustomerList", payload);
         } else {
           return context.commit("createCustomerFailure", response.data);
         }
@@ -82,27 +91,22 @@ const actions = {
             type: "success",
             text: "Customer deleted successfully."
           });
-          context.dispatch('getCustomerList', payload);
+          context.dispatch("getCustomerList", payload);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   },
   getCustomerList(context, payload) {
-    axios
-      .post(`${AppConfig.baseURL}/api/customers`, payload)
-      .then(response => {
-        if (response.data) {
-          Nprogress.done();
-          context.commit("getCustomerListSuccess", response.data);
-        } else {
-          context.commit("getCustomerListFailure");
-
-        }
-      })
+    axios.post(`${AppConfig.baseURL}/api/customers`, payload).then(response => {
+      if (response.data) {
+        Nprogress.done();
+        context.commit("getCustomerListSuccess", response.data);
+      } else {
+        context.commit("getCustomerListFailure");
+      }
+    });
   },
-  clearCreateState(context) {
-
-  }
+  clearCreateState(context) {}
 };
 
 // mutations
@@ -134,6 +138,10 @@ const mutations = {
     state.customers = [];
     state.total = 0;
     state.created_flag = false;
+  },
+  resetCustomerErrors(state, data) {
+    state.error = {};
+    return true;
   }
 };
 

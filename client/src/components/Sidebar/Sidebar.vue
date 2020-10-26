@@ -32,7 +32,7 @@
 								<template v-else>
 									<v-list-tile :to="!item.exact ? `/${getCurrentAppLayoutHandler() + item.path}` : item.path" :key="item.path">
 										<v-list-tile-action>
-											<i class="ti-email"></i>
+											<i :class="item.icon"></i>
 										</v-list-tile-action>
 										<v-list-tile-content>
 											<v-list-tile-title>

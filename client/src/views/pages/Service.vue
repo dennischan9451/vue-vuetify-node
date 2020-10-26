@@ -10,7 +10,7 @@
           </div>
           <v-data-table v-bind:headers="headers" :items="this.getServices">
             <template slot="items" slot-scope="props">
-              <td>{{ props.index + 1 }}</td>
+              <td>{{ props.index + 1 + pagenum * pagesize }}</td>
               <td>{{ props.item.service_name }}</td>
               <td>{{ props.item.service_desc }}</td>
               <td>
@@ -108,12 +108,14 @@ export default {
       this.$store.dispatch("getServiceList", data);
     },
     openadd() {
+      this.$store.dispatch("resetServiceErrors", {});
       this.diag_title = "Add service";
       this.diag_type = 0;
       this.diag_flag = true;
       this.resetData();
     },
     openedit(item) {
+      this.$store.dispatch("resetServiceErrors", {});
       this.diag_title = "Edit service";
       this.diag_type = 1;
       this.diag_flag = true;
@@ -172,7 +174,6 @@ export default {
   },
   watch: {
     getServiceCreatedFlag: function(newValue) {
-      console.log(newValue);
       if (newValue) {
         this.diag_flag = false;
       }

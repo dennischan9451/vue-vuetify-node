@@ -14,7 +14,7 @@ const state = {
   repairs: [],
   error: {},
   total: 0,
-  created_flag: false,
+  created_flag: false
 };
 
 // getters
@@ -27,12 +27,15 @@ const getters = {
     return state.error;
   },
   getRepairCreatedFlag: state => {
-    return state.created_flag
+    return state.created_flag;
   }
 };
 
 // actions
 const actions = {
+  resetErrors(context, payload) {
+    return context.commit("resetErrors", payload);
+  },
   addRepair(context, payload) {
     // context.commit("signupUser");
     axios
@@ -42,9 +45,12 @@ const actions = {
           Nprogress.done();
 
           setTimeout(() => {
-            context.commit("createRepairSuccess", "New Repair created successfully.");
+            context.commit(
+              "createRepairSuccess",
+              "New Repair created successfully."
+            );
           }, 100);
-          return context.dispatch('getRepairList', payload);
+          return context.dispatch("getRepairList", payload);
         } else {
           return context.commit("createRepairFailure", response.data);
         }
@@ -61,9 +67,12 @@ const actions = {
         if (response.data.success) {
           Nprogress.done();
           setTimeout(() => {
-            context.commit("createRepairSuccess", "Repair updated successfully.");
+            context.commit(
+              "createRepairSuccess",
+              "Repair updated successfully."
+            );
           }, 100);
-          return context.dispatch('getRepairList', payload);
+          return context.dispatch("getRepairList", payload);
         } else {
           return context.commit("createRepairFailure", response.data);
         }
@@ -82,27 +91,22 @@ const actions = {
             type: "success",
             text: "Repair deleted successfully."
           });
-          context.dispatch('getRepairList', payload);
+          context.dispatch("getRepairList", payload);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   },
   getRepairList(context, payload) {
-    axios
-      .post(`${AppConfig.baseURL}/api/repairs`, payload)
-      .then(response => {
-        if (response.data) {
-          Nprogress.done();
-          context.commit("getRepairListSuccess", response.data);
-        } else {
-          context.commit("getRepairListFailure");
-
-        }
-      })
+    axios.post(`${AppConfig.baseURL}/api/repairs`, payload).then(response => {
+      if (response.data) {
+        Nprogress.done();
+        context.commit("getRepairListSuccess", response.data);
+      } else {
+        context.commit("getRepairListFailure");
+      }
+    });
   },
-  clearCreateState(context) {
-
-  }
+  clearCreateState(context) {}
 };
 
 // mutations
@@ -128,12 +132,19 @@ const mutations = {
     state.total = data.totals;
     state.error = {};
     state.created_flag = false;
+    return true;
   },
   getRepairListFailure(state) {
     Nprogress.done();
     state.repairs = [];
     state.total = 0;
     state.created_flag = false;
+    return true;
+  },
+  resetErrors(state, data) {
+    console.log("asdfasdfasdf");
+    state.error = {};
+    return true;
   }
 };
 

@@ -27,12 +27,15 @@ const getters = {
     return state.error;
   },
   getServiceCreatedFlag: state => {
-    return state.created_flag
+    return state.created_flag;
   }
 };
 
 // actions
 const actions = {
+  resetServiceErrors(context, payload) {
+    context.commit("resetServiceErrors", payload);
+  },
   addService(context, payload) {
     // context.commit("signupUser");
     axios
@@ -42,9 +45,12 @@ const actions = {
           Nprogress.done();
 
           setTimeout(() => {
-            context.commit("createServiceSuccess", "New Service created successfully.");
+            context.commit(
+              "createServiceSuccess",
+              "New Service created successfully."
+            );
           }, 100);
-          return context.dispatch('getServiceList', payload);
+          return context.dispatch("getServiceList", payload);
         } else {
           return context.commit("createServiceFailure", response.data);
         }
@@ -61,9 +67,12 @@ const actions = {
         if (response.data.success) {
           Nprogress.done();
           setTimeout(() => {
-            context.commit("createServiceSuccess", "Service updated successfully.");
+            context.commit(
+              "createServiceSuccess",
+              "Service updated successfully."
+            );
           }, 100);
-          return context.dispatch('getServiceList', payload);
+          return context.dispatch("getServiceList", payload);
         } else {
           return context.commit("createServiceFailure", response.data);
         }
@@ -82,27 +91,22 @@ const actions = {
             type: "success",
             text: "Service deleted successfully."
           });
-          context.dispatch('getServiceList', payload);
+          context.dispatch("getServiceList", payload);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   },
   getServiceList(context, payload) {
-    axios
-      .post(`${AppConfig.baseURL}/api/services`, payload)
-      .then(response => {
-        if (response.data) {
-          Nprogress.done();
-          context.commit("getServiceListSuccess", response.data);
-        } else {
-          context.commit("getServiceListFailure");
-
-        }
-      })
+    axios.post(`${AppConfig.baseURL}/api/services`, payload).then(response => {
+      if (response.data) {
+        Nprogress.done();
+        context.commit("getServiceListSuccess", response.data);
+      } else {
+        context.commit("getServiceListFailure");
+      }
+    });
   },
-  clearCreateState(context) {
-
-  }
+  clearCreateState(context) {}
 };
 
 // mutations
@@ -134,6 +138,10 @@ const mutations = {
     state.services = [];
     state.total = 0;
     state.created_flag = false;
+  },
+  resetServiceErrors(state, data) {
+    state.error = {};
+    return true;
   }
 };
 

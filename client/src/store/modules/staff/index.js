@@ -27,12 +27,15 @@ const getters = {
     return state.error;
   },
   getStaffCreatedFlag: state => {
-    return state.created_flag
+    return state.created_flag;
   }
 };
 
 // actions
 const actions = {
+  resetStaffErrors(context, payload) {
+    return context.commit("resetStaffErrors", payload);
+  },
   addStaff(context, payload) {
     // context.commit("signupUser");
     axios
@@ -42,9 +45,12 @@ const actions = {
           Nprogress.done();
 
           setTimeout(() => {
-            context.commit("createStaffSuccess", "New Staff created successfully.");
+            context.commit(
+              "createStaffSuccess",
+              "New Staff created successfully."
+            );
           }, 100);
-          return context.dispatch('getStaffList', payload);
+          return context.dispatch("getStaffList", payload);
         } else {
           return context.commit("createStaffFailure", response.data);
         }
@@ -63,7 +69,7 @@ const actions = {
           setTimeout(() => {
             context.commit("createStaffSuccess", "Staff updated successfully.");
           }, 100);
-          return context.dispatch('getStaffList', payload);
+          return context.dispatch("getStaffList", payload);
         } else {
           return context.commit("createStaffFailure", response.data);
         }
@@ -82,27 +88,22 @@ const actions = {
             type: "success",
             text: "Staff deleted successfully."
           });
-          context.dispatch('getStaffList', payload);
+          context.dispatch("getStaffList", payload);
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
   },
   getStaffList(context, payload) {
-    axios
-      .post(`${AppConfig.baseURL}/api/staffs`, payload)
-      .then(response => {
-        if (response.data) {
-          Nprogress.done();
-          context.commit("getStaffListSuccess", response.data);
-        } else {
-          context.commit("getStaffListFailure");
-
-        }
-      })
+    axios.post(`${AppConfig.baseURL}/api/staffs`, payload).then(response => {
+      if (response.data) {
+        Nprogress.done();
+        context.commit("getStaffListSuccess", response.data);
+      } else {
+        context.commit("getStaffListFailure");
+      }
+    });
   },
-  clearCreateState(context) {
-
-  }
+  clearCreateState(context) {}
 };
 
 // mutations
@@ -134,6 +135,10 @@ const mutations = {
     state.staffs = [];
     state.total = 0;
     state.created_flag = false;
+  },
+  resetStaffErrors(state, data) {
+    state.error = {};
+    return true;
   }
 };
 

@@ -10,7 +10,7 @@
           </div>
           <v-data-table v-bind:headers="headers" :items="this.getStores">
             <template slot="items" slot-scope="props">
-              <td>{{ props.index + 1 }}</td>
+              <td>{{ props.index + 1 + pagenum * pagesize }}</td>
               <td>{{ props.item.store_location }}</td>
               <td>
                 <v-btn flat icon small @click.stop="openedit(props.item)">
@@ -155,7 +155,6 @@ export default {
   },
   watch: {
     getStoreCreatedFlag: function(newValue) {
-      console.log(newValue);
       if (newValue) {
         this.diag_flag = false;
       }

@@ -21,12 +21,7 @@ app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
 
 //Connect to mysql DB
-keys.sqldb = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "rootroot",
-  database: "ftu"
-});
+keys.sqldb = mysql.createConnection(keys.mysqlConInfo);
 
 keys.sqldb.connect();
 

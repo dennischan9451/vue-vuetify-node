@@ -10,7 +10,7 @@
           </div>
           <v-data-table v-bind:headers="headers" :items="this.getRepairs">
             <template slot="items" slot-scope="props">
-              <td>{{ props.index + 1 }}</td>
+              <td>{{ props.index + 1 + pagenum * pagesize }}</td>
               <td>{{ props.item.cust_fn + ' ' + props.item.cust_ln }}</td>
               <td>{{ props.item.staff_fn + ' ' + props.item.staff_ln}}</td>
               <td>{{ props.item.service_name }}</td>
@@ -39,18 +39,18 @@
           <v-card-title class="headline ml-2 mr-2">
             <v-layout row wrap justify-space-between>
               <v-flex xs12 sm5>
-                <v-autocomplete name="cust_id" :items="this.getCustomers.map((value, index) => {return value.cust_fn + ' ' + value.cust_ln + ', id:'+ value.cust_id})" label="Customer" required v-model="item.cust_id" :error-messages="this.getRepairError.cust_id"></v-autocomplete>
+                <v-autocomplete name="cust_id" :items="this.getCustomers.map((value, index) => {return value.cust_fn + ' ' + value.cust_ln})" label="Customer" required v-model="item.cust_id" :error-messages="this.getRepairError.cust_id"></v-autocomplete>
               </v-flex>
               <v-flex xs12 sm5>
-                <v-autocomplete name="staff_id" :items="this.getStaffs.map((value, index) => {return value.staff_fn + ' ' + value.staff_ln + ', id:'+ value.staff_id})" label="Staff" required v-model="item.staff_id" :error-messages="this.getRepairError.staff_id"></v-autocomplete>
+                <v-autocomplete name="staff_id" :items="this.getStaffs.map((value, index) => {return value.staff_fn + ' ' + value.staff_ln})" label="Staff" required v-model="item.staff_id" :error-messages="this.getRepairError.staff_id"></v-autocomplete>
               </v-flex>
             </v-layout>
             <v-layout row wrap justify-space-between>
               <v-flex xs12 sm5>
-                <v-autocomplete name="service_id" :items="this.getServices.map((value, index) => {return value.service_name + ', id:'+ value.service_id})" label="Service" required v-model="item.service_id" :error-messages="this.getRepairError.service_id"></v-autocomplete>
+                <v-autocomplete name="service_id" :items="this.getServices.map((value, index) => {return value.service_name})" label="Service" required v-model="item.service_id" :error-messages="this.getRepairError.service_id"></v-autocomplete>
               </v-flex>
               <v-flex xs12 sm5>
-                <v-autocomplete name="store_id" :items="this.getStores.map((value, index) => {return value.store_location + ', id:'+ value.store_id})" label="Store" required v-model="item.store_id" :error-messages="this.getRepairError.store_id"></v-autocomplete>
+                <v-autocomplete name="store_id" :items="this.getStores.map((value, index) => {return value.store_location})" label="Store" required v-model="item.store_id" :error-messages="this.getRepairError.store_id"></v-autocomplete>
               </v-flex>
             </v-layout>
             <v-layout row wrap justify-space-between>
@@ -164,22 +164,24 @@ export default {
       this.$store.dispatch("getStoreList", {});
     },
     openadd() {
+      this.$store.dispatch("resetErrors", {});
       this.diag_title = "Add repair";
       this.diag_type = 0;
       this.diag_flag = true;
       this.resetData();
     },
     openedit(item) {
+      this.$store.dispatch("resetErrors", {});
       this.diag_title = "Edit repair";
       this.diag_type = 1;
       this.diag_flag = true;
       this.item = item;
       this.item = {
         repair_id: this.item.repair_id,
-        cust_id: item.cust_fn + " " + item.cust_ln + ", id:" + item.cust_id,
-        store_id: item.store_location + ", id:" + item.store_id,
-        staff_id: item.staff_fn + " " + item.staff_ln + ", id:" + item.staff_id,
-        service_id: item.service_name + ", id:" + item.service_id,
+        cust_id: item.cust_fn + " " + item.cust_ln,
+        store_id: item.store_location,
+        staff_id: item.staff_fn + " " + item.staff_ln,
+        service_id: item.service_name,
         model: item.model,
         make: item.make,
         repair_comments: item.repair_comments,
@@ -189,15 +191,14 @@ export default {
         date_in: this.wellDate(item.date_in),
         date_out: this.wellDate(item.date_out)
       };
-      console.log(item);
     },
     saveData() {
       var data = {
         repair_id: this.item.repair_id,
-        cust_id: this.getId(this.item.cust_id),
-        store_id: this.getId(this.item.store_id),
-        staff_id: this.getId(this.item.staff_id),
-        service_id: this.getId(this.item.service_id),
+        cust_id: this.getCustomerId(this.item.cust_id),
+        store_id: this.getStoreId(this.item.store_id),
+        staff_id: this.getStaffId(this.item.staff_id),
+        service_id: this.getServiceId(this.item.service_id),
         model: this.item.model,
         make: this.item.make,
         repair_comments: this.item.repair_comments,
@@ -209,7 +210,6 @@ export default {
         pagenum: this.pagenum,
         pagesize: this.pagesize
       };
-      console.log(data);
       if (this.diag_type == 0) {
         this.$store.dispatch("addRepair", data);
       } else {
@@ -253,6 +253,46 @@ export default {
         return string.split(":")[1];
       }
     },
+    getCustomerId(string) {
+      var cust_id = "";
+      this.getCustomers.forEach(customer => {
+        if (customer.cust_fn + " " + customer.cust_ln == string) {
+          cust_id = customer.cust_id;
+          return;
+        }
+      });
+      return cust_id;
+    },
+    getStaffId(string) {
+      var staff_id = "";
+      this.getStaffs.forEach(staff => {
+        if (staff.staff_fn + " " + staff.staff_ln == string) {
+          staff_id = staff.staff_id;
+          return;
+        }
+      });
+      return staff_id;
+    },
+    getServiceId(string) {
+      var service_id = "";
+      this.getServices.forEach(service => {
+        if (service.service_name == string) {
+          service_id = service.service_id;
+          return;
+        }
+      });
+      return service_id;
+    },
+    getStoreId(string) {
+      var store_id = "";
+      this.getStores.forEach(store => {
+        if (store.store_location == string) {
+          store_id = store.store_id;
+          return;
+        }
+      });
+      return store_id;
+    },
     wellDate(time) {
       let thisTime = common.wellDate(time);
       return thisTime;
@@ -271,7 +311,6 @@ export default {
   },
   watch: {
     getRepairCreatedFlag: function(newValue) {
-      console.log(newValue);
       if (newValue) {
         this.diag_flag = false;
       }

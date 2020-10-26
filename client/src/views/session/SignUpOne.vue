@@ -76,7 +76,6 @@ export default {
         password: this.password,
         password2: this.password2
       };
-      console.log(this.croppaImg);
       this.$store.dispatch("register", userDetail);
       if (this.valid) {
       }

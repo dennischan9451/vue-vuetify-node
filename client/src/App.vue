@@ -60,7 +60,6 @@ export default {
       const decoded = jwt_decode(localStorage.jwtToken);
       // Set user and isAuthenticated
       this.$store.dispatch("setCurrentUser", decoded);
-      console.log("decoded", decoded);
       // Check for expired token
       const currentTime = Date.now() / 1000;
       if (decoded.exp < currentTime) {
