@@ -38,11 +38,11 @@ export default {
   mounted() {
     setTimeout(() => {
       this.loading = false;
-      setTimeout(() => {
+      /* setTimeout(() => {
         if (AppConfig.enableUserTour) {
           this.$tours["vuelyTour"].start();
         }
-      }, 1000);
+      }, 1000); */
     }, 2000);
   }
 };
