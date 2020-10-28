@@ -5,14 +5,14 @@
     <v-container fluid grid-list-xl>
       <v-layout row wrap>
         <app-card :heading="$t('message.store_title')" :fullBlock="true" colClasses="xl12 lg12 md12 sm12 xs12">
-          <div class="pa-3">
+          <div class="pa-3" v-show="getUser.role == 0">
             <v-btn raised color="primary" @click.stop="openadd">Add</v-btn>
           </div>
           <v-data-table v-bind:headers="headers" :items="this.getStores">
             <template slot="items" slot-scope="props">
               <td>{{ props.index + 1 + pagenum * pagesize }}</td>
               <td>{{ props.item.store_location }}</td>
-              <td>
+              <td v-show="getUser.role == 0">
                 <v-btn flat icon small @click.stop="openedit(props.item)">
                   <v-icon class="font-md">ti-pencil</v-icon>
                 </v-btn>
@@ -43,16 +43,16 @@
         </v-card>
       </v-dialog>
       <v-dialog v-model="isDelete" max-width="500">
-          <v-card>
-              <v-card-title class="headline ml-2">Are you sure?</v-card-title>
+        <v-card>
+          <v-card-title class="headline ml-2">Are you sure?</v-card-title>
 
-              <v-card-actions>
+          <v-card-actions>
 
-                  <v-spacer></v-spacer>
-                  <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
-                  <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
-              </v-card-actions>
-          </v-card>
+            <v-spacer></v-spacer>
+            <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
+            <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-container>
   </div>
@@ -82,7 +82,7 @@ export default {
       diag_title: "",
       diag_type: 0, // 0: add, 1: update
       pagenum: 0,
-      pagesize: 20,
+      pagesize: "",
       isDelete: false,
       delItem: {}
     };
@@ -151,7 +151,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getStores", "getStoreError", "getStoreCreatedFlag"])
+    ...mapGetters([
+      "getStores",
+      "getStoreError",
+      "getStoreCreatedFlag",
+      "getUser"
+    ])
   },
   watch: {
     getStoreCreatedFlag: function(newValue) {

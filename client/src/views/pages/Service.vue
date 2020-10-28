@@ -49,16 +49,16 @@
         </v-card>
       </v-dialog>
       <v-dialog v-model="isDelete" max-width="500">
-          <v-card>
-              <v-card-title class="headline ml-2">Are you sure?</v-card-title>
+        <v-card>
+          <v-card-title class="headline ml-2">Are you sure?</v-card-title>
 
-              <v-card-actions>
+          <v-card-actions>
 
-                  <v-spacer></v-spacer>
-                  <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
-                  <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
-              </v-card-actions>
-          </v-card>
+            <v-spacer></v-spacer>
+            <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
+            <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-container>
   </div>
@@ -89,7 +89,7 @@ export default {
       diag_title: "",
       diag_type: 0, // 0: add, 1: update
       pagenum: 0,
-      pagesize: 20,
+      pagesize: "",
       isDelete: false,
       delItem: {}
     };
@@ -141,15 +141,8 @@ export default {
     },
     resetData() {
       this.item = {
-        cust_fn: "",
-        cust_ln: "",
-        email: "",
-        phone: "",
-        address_1: "",
-        address_2: "",
-        city: "",
-        zip_code: "",
-        state: ""
+        service_name: "",
+        service_desc: ""
       };
     },
     deleteYes() {

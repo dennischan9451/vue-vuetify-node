@@ -65,14 +65,9 @@
               <v-text-field name="repair_comments" label="Repair Comments" v-model="item.repair_comments" :error-messages="this.getRepairError.repair_comments"></v-text-field>
             </v-flex>
 
-            <v-layout row wrap justify-space-between>
-              <v-flex xs12 sm5>
-                <v-text-field name="status_name" label="Status Name" v-model="item.status_name" :error-messages="this.getRepairError.status_name"></v-text-field>
-              </v-flex>
-              <v-flex xs12 sm5>
-                <v-text-field name="status_desc" label="Status Desc" v-model="item.status_desc" :error-messages="this.getRepairError.status_desc"></v-text-field>
-              </v-flex>
-            </v-layout>
+            <v-flex xs12 sm12>
+              <v-autocomplete name="status_id" :items="this.getRepairStatus.map((value, index) => {return value.status_name})" label="Repair Status" required v-model="item.status_id" :error-messages="this.getRepairError.status_id"></v-autocomplete>
+            </v-flex>
             <v-layout row wrap justify-space-between>
               <v-flex xs12 sm5>
 
@@ -94,16 +89,16 @@
         </v-card>
       </v-dialog>
       <v-dialog v-model="isDelete" max-width="500">
-          <v-card>
-              <v-card-title class="headline ml-2">Are you sure?</v-card-title>
+        <v-card>
+          <v-card-title class="headline ml-2">Are you sure?</v-card-title>
 
-              <v-card-actions>
+          <v-card-actions>
 
-                  <v-spacer></v-spacer>
-                  <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
-                  <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
-              </v-card-actions>
-          </v-card>
+            <v-spacer></v-spacer>
+            <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
+            <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-container>
   </div>
@@ -141,7 +136,7 @@ export default {
       diag_title: "",
       diag_type: 0, // 0: add, 1: update
       pagenum: 0,
-      pagesize: 20,
+      pagesize: "",
       isDelete: false,
       delItem: {}
     };
@@ -162,6 +157,17 @@ export default {
       this.$store.dispatch("getServiceList", {});
       this.$store.dispatch("getStaffList", {});
       this.$store.dispatch("getStoreList", {});
+      this.$store.dispatch("getRepairStatusList", {});
+    },
+    getRepairId(repair_name) {
+      var status_id = "";
+      this.getRepairStatus.forEach(repair => {
+        if (repair.status_name == repair_name) {
+          status_id = repair.status_id;
+          return;
+        }
+      });
+      return status_id;
     },
     openadd() {
       this.$store.dispatch("resetErrors", {});
@@ -185,9 +191,7 @@ export default {
         model: item.model,
         make: item.make,
         repair_comments: item.repair_comments,
-        status_name: item.status_name,
-        status_desc: item.status_desc,
-        status_id: item.status_id,
+        status_id: item.status_name,
         date_in: this.wellDate(item.date_in),
         date_out: this.wellDate(item.date_out)
       };
@@ -202,9 +206,7 @@ export default {
         model: this.item.model,
         make: this.item.make,
         repair_comments: this.item.repair_comments,
-        status_name: this.item.status_name,
-        status_desc: this.item.status_desc,
-        status_id: this.item.status_id,
+        status_id: this.getRepairId(this.item.status_id),
         date_in: this.item.date_in,
         date_out: this.item.date_out,
         pagenum: this.pagenum,
@@ -306,7 +308,8 @@ export default {
       "getStores",
       "getStaffs",
       "getRepairError",
-      "getRepairCreatedFlag"
+      "getRepairCreatedFlag",
+      "getRepairStatus"
     ])
   },
   watch: {

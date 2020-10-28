@@ -1,6 +1,6 @@
 // Sidebar Routers
 export const menus = {
-  Basic: [
+  'message.menutitle': [
     {
       action: "zmdi-crop",
       title: "message.customer",
@@ -40,6 +40,6 @@ export const menus = {
       items: null,
       icon: "ti-settings",
       path: "/repair"
-    }
+    },
   ]
 };

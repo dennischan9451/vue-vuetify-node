@@ -1,21 +1,18 @@
 const Validator = require("validator");
-const isEmpty = require("./is-empty");
+//const isEmpty = require("./is-empty");
+const empty = require('is-empty');
 
 module.exports = function validateCustomers(data, type = "create") {
   let errors = {};
-  data.cust_fn = !isEmpty(data.cust_fn) ? data.cust_fn : "";
-  data.cust_ln = !isEmpty(data.cust_ln) ? data.cust_ln : "";
-  data.email = !isEmpty(data.email) ? data.email : "";
-  data.phone = !isEmpty(data.phone) ? data.phone : "";
-  data.address_1 = !isEmpty(data.address_1) ? data.address_1 : "";
-  data.address_2 = !isEmpty(data.address_2) ? data.address_2 : "";
-  data.city = !isEmpty(data.city) ? data.city : "";
-  data.zip_code = !isEmpty(data.zip_code) ? data.zip_code : "";
-  data.state = !isEmpty(data.state) ? data.state : "";
+  data.cust_fn = !empty(data.cust_fn) ? data.cust_fn : "";
+  data.cust_ln = !empty(data.cust_ln) ? data.cust_ln : "";
+  data.email = !empty(data.email) ? data.email : "";
+  data.phone = !empty(data.phone) ? data.phone : "";
+  data.addresses = !empty(data.addresses) ? data.addresses : [];
 
   if (type == "update") {
-    if (isEmpty(data.address_id)) {
-      errors.address_id = "Input address id";
+    if (empty(data.cust_id)) {
+      errors.cust_id = "Please input cust id";
     }
   }
 
@@ -47,28 +44,39 @@ module.exports = function validateCustomers(data, type = "create") {
     errors.phone = "First name must be between 1 and 25 characters";
   }
 
-  if (!Validator.isLength(data.address_1, { min: 0, max: 255 })) {
-    errors.address_1 = "Address 1 must be between 0 and 255 characters";
-  }
+  if (data.addresses.length > 0) {
+    var err_addrs = [];
+    data.addresses.forEach((address, index) => {
+      var i_errs = {};
+      if (!Validator.isLength(address.address_1, { min: 0, max: 255 })) {
+        i_errs.address_1 = "Address 1 must be between 0 and 255 characters";
+      }
 
-  if (!Validator.isLength(data.address_2, { min: 0, max: 255 })) {
-    errors.address_2 = "Address 2 must be between 0 and 255 characters";
-  }
+      if (!Validator.isLength(address.address_2, { min: 0, max: 255 })) {
+        i_errs.address_2 = "Address 2 must be between 0 and 255 characters";
+      }
 
-  if (!Validator.isLength(data.city, { min: 0, max: 50 })) {
-    errors.city = "City must be between 0 and 50 characters";
-  }
+      if (!Validator.isLength(address.city, { min: 0, max: 50 })) {
+        i_errs.city = "City must be between 0 and 50 characters";
+      }
 
-  if (!Validator.isLength(data.zip_code, { min: 0, max: 10 })) {
-    errors.zip_code = "Zip code must be between 0 and 10 characters";
-  }
+      if (!Validator.isLength(address.zip_code, { min: 0, max: 10 })) {
+        i_errs.zip_code = "Zip code must be between 0 and 10 characters";
+      }
 
-  if (!Validator.isLength(data.state, { min: 0, max: 50 })) {
-    errors.state = "State must be between 0 and 50 characters";
+      if (!Validator.isLength(address.state, { min: 0, max: 50 })) {
+        i_errs.state = "State must be between 0 and 50 characters";
+      }
+      if (!empty(i_errs)) {
+        err_addrs.push(i_errs);
+      }
+    });
+    if (err_addrs.length > 0) {
+      errors.addresses = err_addrs;
+    }
   }
-
   return {
     errors,
-    isValid: isEmpty(errors)
+    isValid: empty(errors)
   };
 };

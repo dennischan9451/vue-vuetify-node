@@ -5,9 +5,10 @@
     <v-container fluid grid-list-xl>
       <v-layout row wrap>
         <app-card :heading="$t('message.staff_title')" :fullBlock="true" colClasses="xl12 lg12 md12 sm12 xs12">
-          <div class="pa-3">
+          <div v-show="getUser.role == 0" class="pa-3">
             <v-btn raised color="primary" @click.stop="openadd">Add</v-btn>
           </div>
+
           <v-data-table v-bind:headers="headers" :items="this.getStaffs">
             <template slot="items" slot-scope="props">
               <td>{{ props.index + 1 + pagenum * pagesize }}</td>
@@ -16,7 +17,7 @@
               <td>{{ props.item.staff_email }}</td>
               <td>{{ props.item.staff_status_name }}</td>
               <td>{{ props.item.staff_status_desc }}</td>
-              <td>
+              <td v-show="getUser.role == 0">
                 <v-btn flat icon small @click.stop="openedit(props.item)">
                   <v-icon class="font-md">ti-pencil</v-icon>
                 </v-btn>
@@ -46,13 +47,9 @@
                 <v-text-field name="staff_email" label="Staff Email" v-model="item.staff_email" :error-messages="this.getStaffError.staff_email"></v-text-field>
               </v-flex>
               <v-flex xs12 sm5>
-                <v-text-field name="staff_status_name" label="Staff Status Name" v-model="item.staff_status_name" :error-messages="this.getStaffError.staff_status_name"></v-text-field>
+                <v-autocomplete name="staff_status_id" :items="this.getStaffStatus.map((value, index) => {return value.staff_status_name})" label="Staff Status" required v-model="item.staff_status_id" :error-messages="this.getStaffError.staff_status_id"></v-autocomplete>
               </v-flex>
             </v-layout>
-            <v-flex xs12 sm12>
-              <v-text-field name="staff_status_desc" label="Staff Status Description" v-model="item.staff_status_desc" :error-messages="this.getStaffError.staff_status_desc"></v-text-field>
-            </v-flex>
-
           </v-card-title>
 
           <v-card-actions>
@@ -64,16 +61,16 @@
         </v-card>
       </v-dialog>
       <v-dialog v-model="isDelete" max-width="500">
-          <v-card>
-              <v-card-title class="headline ml-2">Are you sure?</v-card-title>
+        <v-card>
+          <v-card-title class="headline ml-2">Are you sure?</v-card-title>
 
-              <v-card-actions>
+          <v-card-actions>
 
-                  <v-spacer></v-spacer>
-                  <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
-                  <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
-              </v-card-actions>
-          </v-card>
+            <v-spacer></v-spacer>
+            <v-btn color="success" flat="flat" @click.native="deleteYes">Yes</v-btn>
+            <v-btn color="error" flat="flat" @click.native="deleteNo">No</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
     </v-container>
   </div>
@@ -107,7 +104,7 @@ export default {
       diag_title: "",
       diag_type: 0, // 0: add, 1: update
       pagenum: 0,
-      pagesize: 20,
+      pagesize: "",
       isDelete: false,
       delItem: {}
     };
@@ -118,12 +115,23 @@ export default {
     this.resetData();
   },
   methods: {
+    getStaffId(staff_name) {
+      var staff_id = "";
+      this.getStaffStatus.forEach(staff => {
+        if (staff.staff_status_name == staff_name) {
+          staff_id = staff.staff_status_id;
+          return;
+        }
+      });
+      return staff_id;
+    },
     getTableData() {
       let data = {
         pagenum: this.pagenum,
         pagesize: this.pagesize
       };
       this.$store.dispatch("getStaffList", data);
+      this.$store.dispatch("getStaffStatusList", {});
     },
     openadd() {
       this.$store.dispatch("resetStaffErrors", {});
@@ -141,10 +149,8 @@ export default {
         staff_id: item.staff_id,
         staff_fn: item.staff_fn,
         staff_ln: item.staff_ln,
-        staff_status_name: item.staff_status_name,
         staff_email: item.staff_email,
-        staff_status_desc: item.staff_status_desc,
-        staff_status_id: item.staff_status_id
+        staff_status_id: item.staff_status_name
       };
     },
     saveData() {
@@ -152,10 +158,8 @@ export default {
         staff_id: this.item.staff_id,
         staff_fn: this.item.staff_fn,
         staff_ln: this.item.staff_ln,
-        staff_status_name: this.item.staff_status_name,
         staff_email: this.item.staff_email,
-        staff_status_desc: this.item.staff_status_desc,
-        staff_status_id: this.item.staff_status_id,
+        staff_status_id: this.getStaffId(this.item.staff_status_id),
         pagenum: this.pagenum,
         pagesize: this.pagesize
       };
@@ -192,7 +196,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getStaffs", "getStaffError", "getStaffCreatedFlag"])
+    ...mapGetters([
+      "getStaffs",
+      "getStaffError",
+      "getStaffCreatedFlag",
+      "getStaffStatus",
+      "getUser"
+    ])
   },
   watch: {
     getStaffCreatedFlag: function(newValue) {

@@ -17,13 +17,14 @@
 										<v-list-tile slot="activator">
 											<v-list-tile-content>
 												<v-list-tile-title>
-													<i class="zmdi" :class="item.action"></i>
+													<i :class="item.icon"></i>
 													<span>{{ textTruncate($t(item.title)) }}</span>
 												</v-list-tile-title>
 											</v-list-tile-content>
 										</v-list-tile>
 										<v-list-tile v-for="subItem in item.items" v-bind:key="subItem.title" v-if="subItem !== null" :to="!subItem.exact ? `/${getCurrentAppLayoutHandler() + subItem.path}` : subItem.path">
 											<v-list-tile-content>
+												<i :class="subItem.icon"></i>
 												<v-list-tile-title>{{ textTruncate($t(subItem.title)) }}</v-list-tile-title>
 											</v-list-tile-content>
 										</v-list-tile>

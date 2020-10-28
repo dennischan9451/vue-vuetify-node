@@ -1,27 +1,21 @@
 <template>
-   <v-list-tile class="sidebar-profile">
+	<v-list-tile class="sidebar-profile">
 		<v-list-tile-avatar>
 			<img src="/static/avatars/avatar.png" alt="avatar" height="40" width="40" class="img-responsive" />
 		</v-list-tile-avatar>
 		<v-list-tile-content class="mx-2">
-			<v-list-tile-title><span>{{getUser.first_name + ' ' + getUser.last_name}}</span></v-list-tile-title>
+			<v-list-tile-title>
+				<span v-show="getUser !== null">{{getUser.first_name + ' ' + getUser.last_name}}</span>
+			</v-list-tile-title>
 		</v-list-tile-content>
-		<v-menu 
-			bottom
-			offset-y
-			left
-			content-class="userblock-dropdown" 
-			nudge-top="-10"
-			nudge-right="0"
-			transition="slide-y-transition"
-		>
+		<v-menu bottom offset-y left content-class="userblock-dropdown" nudge-top="-10" nudge-right="0" transition="slide-y-transition">
 			<v-btn dark icon slot="activator" class="ma-0">
-					<v-icon>more_vert</v-icon>
+				<v-icon>more_vert</v-icon>
 			</v-btn>
 			<div class="dropdown-content">
 				<div class="dropdown-top white--text primary">
-					<span class="white--text fs-14 fw-bold d-block">{{getUser.first_name + ' ' + getUser.last_name}}</span>
-					<span class="d-block fs-12 fw-light">{{getUser.email}}</span>
+					<span v-show="getUser !== null" class="white--text fs-14 fw-bold d-block">{{getUser.first_name + ' ' + getUser.last_name}}</span>
+					<span v-show="getUser !== null" class="d-block fs-12 fw-light">{{getUser.email}}</span>
 				</div>
 				<v-list class="dropdown-list">
 					<template v-for="userLink in userLinks" v-if="userLink.id !== 4">
@@ -39,7 +33,7 @@
 				</v-list>
 			</div>
 		</v-menu>
-   </v-list-tile>
+	</v-list-tile>
 </template>
 
 <script>

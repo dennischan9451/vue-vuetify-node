@@ -55,30 +55,17 @@ module.exports = function validateRepair(data, type = "create") {
     }
   }
 
-  if (isEmpty(data.status_name)) {
-    errors.status_name = "Input status_name field";
-  } else {
-    if (!Validator.isLength(data.status_name, { min: 1, max: 50 })) {
-      errors.status_name =
-        "status_name field must be between 1 and 50 characters";
-    }
-  }
-  if (isEmpty(data.status_desc)) {
-    errors.status_desc = "Input status_desc field";
-  } else {
-    if (!Validator.isLength(data.status_desc, { min: 1, max: 50 })) {
-      errors.status_desc =
-        "status_desc field must be between 1 and 50 characters";
-    }
+  if (isEmpty(data.status_id)) {
+    errors.status_id = "Input status_name field";
   }
 
   if (isEmpty(data.date_in)) {
     errors.date_in = "Input date_in field";
   }
 
-  if (isEmpty(data.date_out)) {
-    errors.date_out = "Input date_out field";
-  }
+  // if (isEmpty(data.date_out)) {
+  //   errors.date_out = "Input date_out field";
+  // }
 
   return {
     errors,

@@ -106,7 +106,7 @@ const actions = {
       }
     });
   },
-  clearCreateState(context) {}
+  clearCreateState(context) { }
 };
 
 // mutations
@@ -142,7 +142,6 @@ const mutations = {
     return true;
   },
   resetErrors(state, data) {
-    console.log("asdfasdfasdf");
     state.error = {};
     return true;
   }

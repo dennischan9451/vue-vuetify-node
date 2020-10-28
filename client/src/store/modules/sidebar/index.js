@@ -19,11 +19,11 @@ const actions = {
     context.commit("setActiveMenuGroupHandler", payload);
   },
   resetMenu(context) {
-    const index = state.menus.Basic.map((value, index) => {
+    const index = state.menus['message.menutitle'].map((value, index) => {
       return value.path;
     }).indexOf("/employee");
     if (localStorage.user_role == "0" && index < 0) {
-      state.menus.Basic.push({
+      state.menus['message.menutitle'].push({
         action: "zmdi-crop",
         title: "message.employee",
         active: false,
@@ -31,9 +31,18 @@ const actions = {
         icon: "ti-medall",
         path: "/employee"
       });
+      state.menus['message.menutitle'].push({
+        action: "zmdi-crop",
+        title: "message.status",
+        active: false,
+        items: null,
+        icon: "ti-notepad",
+        path: '/status'
+      });
     } else if (localStorage.user_role == "1") {
       if (index > -1) {
-        state.menus.Basic.pop();
+        state.menus['message.menutitle'].pop();
+        state.menus['message.menutitle'].pop();
       }
     }
   }
@@ -50,7 +59,7 @@ const mutations = {
           for (const matched in state.menus[category][menuGroup].items) {
             if (
               state.menus[category][menuGroup].items[matched].path ==
-                matchedPath ||
+              matchedPath ||
               state.menus[category][menuGroup].items[matched].path == fullPath
             ) {
               state.menus[category][menuGroup].active = true;

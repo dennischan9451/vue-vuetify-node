@@ -461,5 +461,10 @@ export default {
   service_title: "Service management",
   staff_title: "Staff management",
   repair_title: "Repair management",
-  employee_title: "Employee management"
+  employee_title: "Employee management",
+  status_title: "Status management",
+  menutitle: "",
+  status: "Status",
+  repairstatus: "Repair Status",
+  staffstatus: "Staff Status",
 };

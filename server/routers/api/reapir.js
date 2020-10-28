@@ -22,8 +22,7 @@ router.post(
     const repair_comments = req.body.repair_comments;
     const date_in = req.body.date_in;
     const date_out = req.body.date_out;
-    const status_name = req.body.status_name;
-    const status_desc = req.body.status_desc;
+    const status_id = req.body.status_id;
 
     const { errors, isValid } = validateRepair(req.body);
 
@@ -34,11 +33,15 @@ router.post(
 
     const sqldb = keys.sqldb;
     sqldb.query(
-      "INSERT INTO repair_status (status_name, status_desc) VALUES (?, ?)",
-      [status_name, status_desc],
+      "SELECT * FROM repair_status WHERE status_id=?",
+      [status_id],
       function(err, rows) {
         if (err)
           return res.json({ errors: { code: 401, msg: "Server Error" } });
+        if (rows.length == 0)
+          return res.json({
+            errors: { code: 401, msg: "Status ID is not correct" }
+          });
 
         sqldb.query(
           "INSERT INTO repair (cust_id, staff_id, service_id, store_id, make, model, repair_comments, status_id, date_in, date_out) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -50,7 +53,7 @@ router.post(
             make,
             model,
             repair_comments,
-            rows.insertId,
+            status_id,
             date_in,
             date_out
           ],
@@ -84,8 +87,6 @@ router.post(
     const repair_comments = req.body.repair_comments;
     const date_in = req.body.date_in;
     const date_out = req.body.date_out;
-    const status_name = req.body.status_name;
-    const status_desc = req.body.status_desc;
 
     const { errors, isValid } = validateRepair(req.body, "update");
 
@@ -96,7 +97,7 @@ router.post(
 
     const sqldb = keys.sqldb;
     sqldb.query(
-      "UPDATE repair SET cust_id=?, staff_id=?, service_id=?, store_id=?, make=?, model=?, repair_comments=?, date_in=?, date_out=? WHERE repair_id=?",
+      "UPDATE repair SET cust_id=?, staff_id=?, service_id=?, store_id=?, make=?, model=?, repair_comments=?, date_in=?, date_out=?, status_id=? WHERE repair_id=?",
       [
         cust_id,
         staff_id,
@@ -107,23 +108,13 @@ router.post(
         repair_comments,
         date_in,
         date_out,
+        status_id,
         repair_id
       ],
       function(err, rows, fields) {
         if (err) res.json({ errors: { code: 401, msg: "Customer Not Found" } });
 
-        sqldb.query(
-          "UPDATE repair_status SET status_name=?, status_desc=? WHERE status_id=?",
-          [status_name, status_desc, status_id],
-          function(err, rows) {
-            if (err)
-              res.json({
-                errors: { code: 402, msg: "Address ID was not Correct" }
-              });
-
-            return res.json({ success: true });
-          }
-        );
+        return res.json({ success: true });
       }
     );
   }
@@ -160,7 +151,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const pagenum = req.body.pagenum ? Number(req.body.pagenum) : 0;
-    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 10;
+    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 100;
     const startIndex = pagenum * pagesize;
 
     const sqldb = keys.sqldb;

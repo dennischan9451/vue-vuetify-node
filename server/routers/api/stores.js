@@ -100,7 +100,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const pagenum = req.body.pagenum ? Number(req.body.pagenum) : 0;
-    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 10;
+    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 100;
     const startIndex = pagenum * pagesize;
 
     const sqldb = keys.sqldb;

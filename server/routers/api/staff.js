@@ -16,8 +16,7 @@ router.post(
     const staff_fn = req.body.staff_fn;
     const staff_ln = req.body.staff_ln;
     const staff_email = req.body.staff_email;
-    const staff_status_name = req.body.staff_status_name;
-    const staff_status_desc = req.body.staff_status_desc;
+    const staff_status_id = req.body.staff_status_id;
 
     const { errors, isValid } = validateStaff(req.body);
 
@@ -28,21 +27,13 @@ router.post(
 
     const sqldb = keys.sqldb;
     sqldb.query(
-      "INSERT INTO staff_status (staff_status_name, staff_status_desc) VALUES (?, ?)",
-      [staff_status_name, staff_status_desc],
+      "INSERT INTO staff (staff_fn, staff_ln, staff_email, staff_status_id) VALUES (?, ?, ?, ?)",
+      [staff_fn, staff_ln, staff_email, staff_status_id],
       function(err, rows) {
         if (err)
           return res.json({ errors: { code: 401, msg: "Server Error" } });
 
-        sqldb.query(
-          "INSERT INTO staff (staff_fn, staff_ln, staff_email, staff_status_id) VALUES (?, ?, ?, ?)",
-          [staff_fn, staff_ln, staff_email, rows.insertId],
-          function(err, rows, fields) {
-            if (err)
-              return res.json({ errors: { code: 402, msg: "Server Error" } });
-            return res.json({ success: true });
-          }
-        );
+        return res.json({ success: true });
       }
     );
   }
@@ -61,8 +52,6 @@ router.post(
     const staff_fn = req.body.staff_fn;
     const staff_ln = req.body.staff_ln;
     const staff_email = req.body.staff_email;
-    const staff_status_name = req.body.staff_status_name;
-    const staff_status_desc = req.body.staff_status_desc;
 
     const { errors, isValid } = validateStaff(req.body, "update");
 
@@ -73,23 +62,12 @@ router.post(
 
     const sqldb = keys.sqldb;
     sqldb.query(
-      "UPDATE staff SET staff_fn=?, staff_ln=?, staff_email=? WHERE staff_id=?",
-      [staff_fn, staff_ln, staff_email, staff_id],
+      "UPDATE staff SET staff_fn=?, staff_ln=?, staff_email=?, staff_status_id=? WHERE staff_id=?",
+      [staff_fn, staff_ln, staff_email, staff_status_id, staff_id],
       function(err, rows) {
         if (err) res.json({ errors: { code: 401, msg: "Staff Not Found" } });
 
-        sqldb.query(
-          "UPDATE staff_status SET staff_status_name=?, staff_status_desc=? WHERE staff_status_id=?",
-          [staff_status_name, staff_status_desc, staff_status_id],
-          function(err, rows) {
-            if (err)
-              res.json({
-                errors: { code: 402, msg: "Staff status ID was not Correct" }
-              });
-
-            return res.json({ success: true });
-          }
-        );
+        return res.json({ success: true });
       }
     );
   }
@@ -126,7 +104,7 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const pagenum = req.body.pagenum ? Number(req.body.pagenum) : 0;
-    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 10;
+    const pagesize = req.body.pagesize ? Number(req.body.pagesize) : 100;
     const startIndex = pagenum * pagesize;
 
     const sqldb = keys.sqldb;

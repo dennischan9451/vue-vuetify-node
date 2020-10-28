@@ -7,6 +7,7 @@ const Service = () => import('Views/pages/Service');
 const Staff = () => import('Views/pages/Staff');
 const Repair = () => import('Views/pages/Repair');
 const Employee = () => import('Views/pages/Employee');
+const Status = () => import('Views/pages/Status');
 
 export default {
    path: '/',
@@ -58,6 +59,14 @@ export default {
          component: Employee,
          meta: {
             title: 'message.employee',
+            requiresAuth: true,
+         }
+      },
+      {
+         path: '/ftu/status',
+         component: Status,
+         meta: {
+            title: 'message.status',
             requiresAuth: true,
          }
       },

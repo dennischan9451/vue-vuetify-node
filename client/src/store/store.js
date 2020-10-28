@@ -8,6 +8,7 @@ import sidebar from "./modules/sidebar";
 import customer from "./modules/customer";
 import stores from "./modules/stores";
 import service from "./modules/service";
+import status from "./modules/status";
 import staff from "./modules/staff";
 import repair from "./modules/repair";
 import employee from "./modules/employee";
@@ -21,6 +22,7 @@ export const store = new Vuex.Store({
     customer,
     stores,
     service,
+    status,
     sidebar,
     staff,
     repair,

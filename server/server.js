@@ -12,6 +12,7 @@ const stores = require("./routers/api/stores");
 const services = require("./routers/api/services");
 const staff = require("./routers/api/staff");
 const repair = require("./routers/api/reapir");
+const status = require("./routers/api/status");
 
 const app = express();
 
@@ -38,7 +39,10 @@ app.use("/api/stores", stores);
 app.use("/api/services", services);
 app.use("/api/staffs", staff);
 app.use("/api/repairs", repair);
+app.use("/api/status", status);
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, "0.0.0.0", () => console.log(`Server running on port ${port}.`));
+app.listen(port, "0.0.0.0", () =>
+  console.log(`Server running on port ${port}.`)
+);

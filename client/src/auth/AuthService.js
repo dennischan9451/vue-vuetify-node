@@ -68,6 +68,13 @@ class AuthService {
     // Check whether the current time is past the
     // access token's expiry time
     let expiresAt = JSON.parse(localStorage.getItem("expires_at"));
+    let user_role = localStorage.getItem("user_role");
+
+    if (user_role == 0) {
+      document.getElementById("ftu_title").innerHTML = "FTU Admin Panel";
+    } else if (user_role == 1) {
+      document.getElementById("ftu_title").innerHTML = "FTU Employee Panel";
+    }
     return new Date().getTime() < expiresAt;
   }
 }

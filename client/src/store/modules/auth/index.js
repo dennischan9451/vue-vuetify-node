@@ -66,6 +66,13 @@ const actions = {
           setTimeout(() => {
             context.commit("loginUserSuccess", response.data);
           }, 300);
+
+          if (response.data.user.role == 0) {
+            document.getElementById("ftu_title").innerHTML = "FTU Admin Panel";
+          } else if (response.data.user.role == 1) {
+            document.getElementById("ftu_title").innerHTML =
+              "FTU Employee Panel";
+          }
         } else {
           context.commit("loginUserFailure", {
             message: "Your credentials are incorrect"
