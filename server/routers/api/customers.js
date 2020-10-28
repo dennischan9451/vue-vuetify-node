@@ -141,23 +141,23 @@ router.post(
   (req, res) => {
     const cust_id = req.body.cust_id;
     const sqldb = keys.sqldb;
-    sqldb.query("DELETE FROM customer WHERE cust_id=?", [cust_id], function(
-      err,
-      rows,
-      fields
-    ) {
-      if (err) return res.json({ errors: { code: 400, msg: "Server Error" } });
-
-      sqldb.query(
-        "DELETE FROM customer_address WHERE cust_id=?",
-        [cust_id],
-        function(err, rows) {
+    sqldb.query(
+      "DELETE FROM customer_address WHERE cust_id=?",
+      [cust_id],
+      function(err, rows) {
+        if (err)
+          return res.json({ errors: { code: 400, msg: "Server Error" } });
+        sqldb.query("DELETE FROM customer WHERE cust_id=?", [cust_id], function(
+          err,
+          rows,
+          fields
+        ) {
           if (err)
             return res.json({ errors: { code: 400, msg: "Server Error" } });
           return res.json({ success: true });
-        }
-      );
-    });
+        });
+      }
+    );
   }
 );
 
