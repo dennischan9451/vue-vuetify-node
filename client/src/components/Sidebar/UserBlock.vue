@@ -4,7 +4,7 @@
 			<img src="/static/avatars/avatar.png" alt="avatar" height="40" width="40" class="img-responsive" />
 		</v-list-tile-avatar>
 		<v-list-tile-content class="mx-2">
-			<v-list-tile-title>
+			<v-list-tile-title class="admin-name">
 				<span v-show="getUser !== null">{{getUser.first_name + ' ' + getUser.last_name}}</span>
 			</v-list-tile-title>
 		</v-list-tile-content>
@@ -65,3 +65,8 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.admin-name {
+	text-transform: capitalize;
+}
+</style>
