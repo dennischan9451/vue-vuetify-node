@@ -30,7 +30,6 @@ router.post(
       "INSERT INTO customer (cust_fn, cust_ln, email, phone) VALUES (?, ?, ?, ?)",
       [cust_fn, cust_ln, email, phone],
       function(err, rows, fields) {
-        console.log(err)
         if (err)
           return res.json({ errors: { code: 402, msg: "Server Error" } });
 

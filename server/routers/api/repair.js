@@ -62,7 +62,6 @@ router.post(
             date_out
           ],
           function(err, rows, fields) {
-            console.log(err)
             if (err)
               return res.json({ errors: { code: 402, msg: "Server Error" } });
             return res.json({ success: true });
