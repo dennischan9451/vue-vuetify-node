@@ -11,7 +11,7 @@ const customers = require("./routers/api/customers");
 const stores = require("./routers/api/stores");
 const services = require("./routers/api/services");
 const staff = require("./routers/api/staff");
-const repair = require("./routers/api/reapir");
+const repair = require("./routers/api/repair");
 const status = require("./routers/api/status");
 
 const app = express();

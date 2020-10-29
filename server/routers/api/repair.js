@@ -4,6 +4,7 @@ const mysql = require("mysql");
 const keys = require("../../config/keys");
 const validateRepair = require("../../validation/repair");
 const passport = require("passport");
+const empty = require('is-empty');
 
 //@route    POST api/repair/create
 //@desc     Create repair
@@ -22,6 +23,9 @@ router.post(
     const repair_comments = req.body.repair_comments;
     const date_in = req.body.date_in;
     const date_out = req.body.date_out;
+    if (empty(date_out)) {
+      date_out = null
+    }
     const status_id = req.body.status_id;
 
     const { errors, isValid } = validateRepair(req.body);
@@ -58,6 +62,7 @@ router.post(
             date_out
           ],
           function(err, rows, fields) {
+            console.log(err)
             if (err)
               return res.json({ errors: { code: 402, msg: "Server Error" } });
             return res.json({ success: true });
