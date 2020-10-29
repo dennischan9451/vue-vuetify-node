@@ -22,9 +22,9 @@ router.post(
     const model = req.body.model;
     const repair_comments = req.body.repair_comments;
     const date_in = req.body.date_in;
-    const date_out = req.body.date_out;
-    if (empty(date_out)) {
-      date_out = null
+    let date_out = null
+    if (!empty(req.body.date_out)) {
+      date_out = req.body.date_out
     }
     const status_id = req.body.status_id;
 
